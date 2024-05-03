@@ -1,0 +1,62 @@
+Code:
+
+Dump of assembler code for function copy_buf:
+   0x080484b2 <+0>:	push   %ebp
+   0x080484b3 <+1>:	mov    %esp,%ebp
+   0x080484b5 <+3>:	push   %ebx
+   0x080484b6 <+4>:	sub    $0x54,%esp
+   0x080484b9 <+7>:	call   0x804854d <__x86.get_pc_thunk.ax>
+   0x080484be <+12>:	add    $0x1b42,%eax
+   0x080484c3 <+17>:	mov    0x8(%ebp),%edx
+   0x080484c6 <+20>:	mov    %edx,-0x4c(%ebp)
+   0x080484c9 <+23>:	mov    %gs:0x14,%ecx
+=> 0x080484d0 <+30>:	mov    %ecx,-0xc(%ebp)
+   0x080484d3 <+33>:	xor    %ecx,%ecx
+   0x080484d5 <+35>:	sub    $0x8,%esp
+   0x080484d8 <+38>:	push   -0x4c(%ebp)
+   0x080484db <+41>:	lea    -0x3e(%ebp),%edx
+   0x080484de <+44>:	push   %edx
+   0x080484df <+45>:	mov    %eax,%ebx
+   0x080484e1 <+47>:	call   0x8048360 <strcpy@plt>
+   0x080484e6 <+52>:	add    $0x10,%esp
+   0x080484e9 <+55>:	nop
+   0x080484ea <+56>:	mov    -0xc(%ebp),%ecx
+   0x080484ed <+59>:	sub    %gs:0x14,%ecx
+   0x080484f4 <+66>:	je     0x80484fb <copy_buf+73>
+   0x080484f6 <+68>:	call   0x80485d0 <__stack_chk_fail_local>
+   0x080484fb <+73>:	mov    -0x4(%ebp),%ebx
+   0x080484fe <+76>:	leave  
+   0x080484ff <+77>:	ret    
+End of assembler dump.
+
+
+Explanation:
+Let's analyze the function and explain the functioning of stack canaries in this context:
+
+Function Prologue:
+----------------
+The function prologue (push %ebp, mov %esp, %ebp) sets up the stack frame by saving the old base pointer (%ebp) and making the stack pointer (%esp) the new base pointer.
+
+Stack Allocation:
+-------------------
+sub $0x54, %esp reserves space on the stack for local variables. Here, 0x54 in hexadecimal equals 84 in decimal, meaning the function is allocating 84 bytes on the stack for local variables.
+
+Buffer Copying:
+----------------
+The strcpy function is called to copy data from one buffer to another.
+The source buffer is located at -0x4c(%ebp), and the destination buffer is located at -0x3e(%ebp).
+
+Stack Canary Check:
+------------------
+Before the function returns, it performs a stack canary check to detect stack buffer overflow.
+mov %gs:0x14, %ecx loads the stack canary value from a special location in memory (the global offset table).
+-0xc(%ebp) contains the original value of the stack canary.
+xor %ecx, %ecx clears %ecx.
+sub $0x8, %esp allocates space for parameters on the stack.
+push -0x4c(%ebp) and push %edx push the source and destination buffer addresses onto the stack as parameters.
+The strcpy function is called to copy data from the source buffer to the destination buffer.
+After the strcpy call, the stack canary check is performed: sub %gs:0x14, %ecx. If the result is not zero, indicating that the stack canary has been modified (likely due to a buffer overflow), __stack_chk_fail_local is called, which typically triggers an error or exception to terminate the program.
+
+Function Epilogue:
+------------------
+The function epilogue (leave and ret) restores the stack frame and returns control to the caller.

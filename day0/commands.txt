@@ -1,0 +1,33 @@
+Create a object file
+
+gcc hello-world.c -c
+
+Read the elf header
+
+readelf -h hello-world.o
+
+Read information about different sections
+
+readelf -S hello-world.o
+
+Create a executable file
+
+gcc hello-world.c -o hello-world
+
+Read program header information
+
+readelf -l hello-world
+
+Contents of the executable
+
+objdump --disassemble-all hello-world > hello-world.lst
+
+Process listing
+
+ps -ae | grep hello-world
+
+Process virtual memory map
+
+sudo cat /proc/$pid/maps
+
+

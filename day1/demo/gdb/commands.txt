@@ -1,0 +1,38 @@
+gcc -fno-stack-protector -z execstack -no-pie -m32 -g test.c -o test
+
+-m32 option may give errors if lib32 is not present.
+Install lib32 - sudo apt-get install gcc-10-multilib
+Try: export LDFLAGS='-m32'
+
+Read ELF header and sections
+
+readelf -h test
+readelf -s test
+
+Disassemble
+
+objdump --disassemble-all ./test > test.lst
+
+Gdb - GNU debugger
+
+gdb ./test
+
+list 			// list the program code
+
+b linenumber  		// add breakpoint at line number
+
+c			// continue
+
+info registers eip ebp esp  //prints value of the registers
+
+x/32x $esp  			// dumps the memory starting from address $esp, 32x specifies the number of memory locations and hexadecimal format
+
+disassemble   		// disassembles similar to objdump
+
+si			// single instruction execution
+
+info locals		// print local variables information
+
+p/x &buffer		// print address of local variable in hexadecimal
+
+

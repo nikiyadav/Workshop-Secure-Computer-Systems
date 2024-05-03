@@ -1,0 +1,21 @@
+W^X or NX bit or DEP: prevent executable stack and writable code pages
+----------------------------------------------------------------------
+Enabled by default.
+Disabled using -z execstack
+
+
+stack canaries: detect buffer is overflowing
+--------------------------------------------
+Added by default by compiler.
+We disabled it using -fno-stack-protector
+Use -f-stack-protector to enable canaries
+
+
+ASLR (Address space layout randomization): Location of various modules are randomised at each run, attacker find it difficult to find the location of payload
+----------------------------------------------------------------------------
+Status of ASLR in Linux can be check in director /proc/sys/kernel/randomize_va_space
+Value 0 indicates that it is disabled
+To enable, we can change the value to 1,2,3
+Change using sudo "sh -c echo 3 > /proc/sys/kernell/randomize_va_space"
+
+This will prevent the attack because the location of stack and other modules will be randomzised on each run and would be difficult to guess the location of the payload.

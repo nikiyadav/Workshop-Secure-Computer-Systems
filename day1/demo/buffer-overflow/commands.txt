@@ -1,0 +1,20 @@
+gcc -fno-stack-protector -z execstack -no-pie -m32 -g buffer.c -o buffer
+
+./buffer QQQQQQQQQQQQQQQQ
+
+
+./buffer QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ
+
+
+gdb ./buffer
+
+Gdb Commands:
+list
+b 10
+r AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+c
+b 7
+info registers eip esp ebp
+x/32x $esp
+disassemble
+si 
